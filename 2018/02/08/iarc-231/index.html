@@ -1,0 +1,1127 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Architect," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="简述本文中，将改进数据服务。使用redis集群来提供缓存服务。">
+<meta name="keywords" content="Architect">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构之旅-集群与管理-数据-Redis">
+<meta property="og:url" content="https://gitee.com/icmyfuture/icmyfuture/2018/02/08/iarc-231/index.html">
+<meta property="og:site_name" content="icmyfuture">
+<meta property="og:description" content="简述本文中，将改进数据服务。使用redis集群来提供缓存服务。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-08T13:38:24.616Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="架构之旅-集群与管理-数据-Redis">
+<meta name="twitter:description" content="简述本文中，将改进数据服务。使用redis集群来提供缓存服务。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gitee.com/icmyfuture/icmyfuture/2018/02/08/iarc-231/"/>
+
+
+
+
+
+  <title>架构之旅-集群与管理-数据-Redis | icmyfuture</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">icmyfuture</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Nothing is true, everthing is permitted</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input" placeholder="search my blog...">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://gitee.com/icmyfuture/icmyfuture/2018/02/08/iarc-231/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="iDu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icmyfuture">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">架构之旅-集群与管理-数据-Redis</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T16:00:08+08:00">
+                2018-02-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technology/" itemprop="url" rel="index">
+                    <span itemprop="name">Technology</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h1><p>本文中，将改进数据服务。使用redis集群来提供缓存服务。<a id="more"></a></p>
+<h1 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h1><p><a href="https://github.com/icmyfuture/iarc/tree/master/iarc-data" target="_blank" rel="noopener">iarc-data</a></p>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>IDE: IntelliJ IDEA<br>JDK: 1.8.0_u162<br>Framework: spring boot, dubbo<br>Cache: Redis<br>WebServer: Tomcat (本地端口8088)</p>
+<h1 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h1><h2 id="pom-dependency"><a href="#pom-dependency" class="headerlink" title="pom dependency"></a>pom dependency</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="appliation-properties-redis配置"><a href="#appliation-properties-redis配置" class="headerlink" title="appliation.properties redis配置"></a>appliation.properties redis配置</h2><h3 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.database=2</span><br><span class="line">spring.redis.timeout=10000</span><br><span class="line">spring.redis.pool.max-idle=8</span><br><span class="line">spring.redis.pool.min-idle=1</span><br><span class="line">spring.redis.pool.max-active=8</span><br><span class="line">spring.redis.pool.max-wait=-1</span><br></pre></td></tr></table></figure>
+<h3 id="单实例"><a href="#单实例" class="headerlink" title="单实例"></a>单实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.host=127.0.0.1</span><br><span class="line">spring.redis.port=6379</span><br><span class="line">spring.redis.password=****</span><br></pre></td></tr></table></figure>
+<h3 id="Sentinel集群"><a href="#Sentinel集群" class="headerlink" title="Sentinel集群"></a>Sentinel集群</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.sentinel.master=mymaster</span><br><span class="line">spring.redis.sentinel.nodes=192.168.56.103:29000,192.168.56.103:29001,192.168.56.103:29002</span><br></pre></td></tr></table></figure>
+<h2 id="配置类"><a href="#配置类" class="headerlink" title="配置类"></a>配置类</h2><h3 id="RedisCacheConfig"><a href="#RedisCacheConfig" class="headerlink" title="RedisCacheConfig"></a>RedisCacheConfig</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">package cn.icmyfuture.iarc.data.common;</span><br><span class="line"></span><br><span class="line">import com.fasterxml.jackson.annotation.JsonAutoDetect;</span><br><span class="line">import com.fasterxml.jackson.annotation.PropertyAccessor;</span><br><span class="line">import com.fasterxml.jackson.databind.DeserializationFeature;</span><br><span class="line">import com.fasterxml.jackson.databind.ObjectMapper;</span><br><span class="line">import org.springframework.cache.CacheManager;</span><br><span class="line">import org.springframework.cache.annotation.CachingConfigurerSupport;</span><br><span class="line">import org.springframework.cache.interceptor.KeyGenerator;</span><br><span class="line">import org.springframework.context.annotation.Bean;</span><br><span class="line">import org.springframework.data.redis.cache.RedisCacheManager;</span><br><span class="line">import org.springframework.data.redis.connection.RedisConnectionFactory;</span><br><span class="line">import org.springframework.data.redis.core.RedisTemplate;</span><br><span class="line">import org.springframework.data.redis.core.StringRedisTemplate;</span><br><span class="line">import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;</span><br><span class="line"></span><br><span class="line">import java.lang.reflect.Method;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Map;</span><br><span class="line"></span><br><span class="line">public class RedisCacheConfig extends CachingConfigurerSupport &#123;</span><br><span class="line">    private static final Map&lt;String, Long&gt; cacheMap = new HashMap&lt;String, Long&gt;();</span><br><span class="line"></span><br><span class="line">    public static void setCacheTime(String key, Long cacheTime)&#123;</span><br><span class="line">        cacheMap.put(key, cacheTime);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public KeyGenerator keyGenerator() &#123;</span><br><span class="line">        return new KeyGenerator() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Object generate(Object target, Method method, Object... params) &#123;</span><br><span class="line">                StringBuilder sb = new StringBuilder();</span><br><span class="line">                sb.append(&quot;v2:&quot;);</span><br><span class="line">                sb.append(target.getClass().getName()+&quot;:&quot;);</span><br><span class="line">                sb.append(method.getName()+&quot;:&quot;);</span><br><span class="line">                for (Object obj : params) &#123;</span><br><span class="line">                    sb.append(obj.toString());</span><br><span class="line">                &#125;</span><br><span class="line">                return sb.toString();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;rawtypes&quot;)</span><br><span class="line">    @Bean</span><br><span class="line">    public CacheManager cacheManager(RedisTemplate redisTemplate) &#123;</span><br><span class="line">        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);</span><br><span class="line">        cacheManager.setExpires(cacheMap);</span><br><span class="line">        return cacheManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public RedisTemplate&lt;String, String&gt; redisTemplate(RedisConnectionFactory factory) &#123;</span><br><span class="line">        StringRedisTemplate template = new StringRedisTemplate(factory);</span><br><span class="line">        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);</span><br><span class="line">        ObjectMapper om = new ObjectMapper();</span><br><span class="line">        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);</span><br><span class="line">        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);</span><br><span class="line">        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);</span><br><span class="line">        jackson2JsonRedisSerializer.setObjectMapper(om);</span><br><span class="line">        template.setValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        template.afterPropertiesSet();</span><br><span class="line">        return template;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CacheConfig"><a href="#CacheConfig" class="headerlink" title="CacheConfig"></a>CacheConfig</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">package cn.icmyfuture.iarc.data.config;</span><br><span class="line"></span><br><span class="line">import cn.icmyfuture.iarc.data.common.RedisCacheConfig;</span><br><span class="line">import org.springframework.cache.annotation.EnableCaching;</span><br><span class="line">import org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">@EnableCaching</span><br><span class="line">public class CacheConfig extends RedisCacheConfig &#123;</span><br><span class="line">    public static final String getAllUsers = &quot;getAllUsers&quot;;</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        setCacheTime(getAllUsers, 180L);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="SpringBoot开启缓存"><a href="#SpringBoot开启缓存" class="headerlink" title="SpringBoot开启缓存"></a>SpringBoot开启缓存</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@EnableCaching</span><br><span class="line">public class DataApplication extends SpringBootServletInitializer</span><br></pre></td></tr></table></figure>
+<h3 id="Service实现中，使用redis缓存"><a href="#Service实现中，使用redis缓存" class="headerlink" title="Service实现中，使用redis缓存"></a>Service实现中，使用redis缓存</h3><p>由于dubbo不支持使用注解@Cacheable，只能选择以下2种解决方式之一(本文使用第一种方式，对key的设置有更大的灵活性)</p>
+<ul>
+<li>使用@Service注解，在代码中获取/设置缓存</li>
+<li>不使用@Service注解，使用dubbo配置的方式来注册服务，同时开启缓存<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public class UserServiceImpl implements UserService &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    UserDao userDao;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private CacheManager cacheManager;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public List&lt;User&gt; getAllUsers() &#123;</span><br><span class="line">        Cache cache = cacheManager.getCache(CacheConfig.getAllUsers);</span><br><span class="line">        String key = String.format(&quot;%s&quot;, CacheConfig.getAllUsers);</span><br><span class="line">        Cache.ValueWrapper wrapper = cache.get(key);</span><br><span class="line">        List&lt;User&gt; users;</span><br><span class="line">        if (wrapper == null) &#123;</span><br><span class="line">            users = userDao.getAllUsers();</span><br><span class="line">            cache.put(key, users);</span><br><span class="line">            return users;</span><br><span class="line">        &#125;</span><br><span class="line">        return (List&lt;User&gt;) wrapper.get();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><ul>
+<li>访问<code>http://localhost:8002/user/getAllUsers</code>来验证redis缓存的有效性</li>
+<li>访问<code>http://localhost:8002/druid/index.html</code>来查看<code>SQL监控</code>以验证sql仅被执行了一次</li>
+</ul>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>centos下配置好redis。maven工程根目录下执行命令<code>mvn clean install</code>，然后将iarc-data与iarc-service部署到tomcat中,访问<code>http://localhost:8080/service/user/getAllUsers</code></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://www.cnblogs.com/jaign/articles/7920588.html" target="_blank" rel="noopener">windows下redis安装配置</a></li>
+<li><a href="http://blog.csdn.net/qiuyufeng/article/details/70474001" target="_blank" rel="noopener">windows下redis集群配置</a></li>
+<li>Redis Sentinel <a href="http://blog.csdn.net/men_wen/article/details/72724406" target="_blank" rel="noopener">1</a> <a href="https://www.cnblogs.com/keithtt/p/6693030.html" target="_blank" rel="noopener">2</a> <a href="https://www.cnblogs.com/keithtt/p/6719532.html" target="_blank" rel="noopener">3</a> <a href="http://blog.csdn.net/lifetragedy/article/details/50660310" target="_blank" rel="noopener">4</a></li>
+<li><a href="https://www.cnblogs.com/ityouknow/p/5748830.html" target="_blank" rel="noopener">spring boot使用redis</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Architect/" rel="tag"># Architect</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/05/iarc-130/" rel="next" title="架构之旅-多层架构-数据">
+                <i class="fa fa-chevron-left"></i> 架构之旅-多层架构-数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/02/iarc-232/" rel="prev" title="架构之旅-集群与管理-数据-Mysql_读写分离/主从复制/分库分表">
+                架构之旅-集群与管理-数据-Mysql_读写分离/主从复制/分库分表 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="iDu" />
+          <p class="site-author-name" itemprop="name">iDu</p>
+           
+              <p class="site-description motion-element" itemprop="description">诗酒风流品花月</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/icmyfuture" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/1865769731" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简述"><span class="nav-number">1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源代码"><span class="nav-number">2.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境"><span class="nav-number">3.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开发"><span class="nav-number">4.</span> <span class="nav-text">开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pom-dependency"><span class="nav-number">4.1.</span> <span class="nav-text">pom dependency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#appliation-properties-redis配置"><span class="nav-number">4.2.</span> <span class="nav-text">appliation.properties redis配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通用"><span class="nav-number">4.2.1.</span> <span class="nav-text">通用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单实例"><span class="nav-number">4.2.2.</span> <span class="nav-text">单实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sentinel集群"><span class="nav-number">4.2.3.</span> <span class="nav-text">Sentinel集群</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置类"><span class="nav-number">4.3.</span> <span class="nav-text">配置类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RedisCacheConfig"><span class="nav-number">4.3.1.</span> <span class="nav-text">RedisCacheConfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CacheConfig"><span class="nav-number">4.3.2.</span> <span class="nav-text">CacheConfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBoot开启缓存"><span class="nav-number">4.3.3.</span> <span class="nav-text">SpringBoot开启缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service实现中，使用redis缓存"><span class="nav-number">4.3.4.</span> <span class="nav-text">Service实现中，使用redis缓存</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#调试"><span class="nav-number">5.</span> <span class="nav-text">调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署"><span class="nav-number">6.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iDu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

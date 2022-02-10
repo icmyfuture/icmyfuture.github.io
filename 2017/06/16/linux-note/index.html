@@ -1,0 +1,1236 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="安装CentOS安装VirtualBox+CentOS 设备-&amp;gt;安装增强功能打开目录run/media/root/VBoxAddons…，终端运行sh VBoxLinuxAdditions.run，重启后就可以在”应用程序-系统工具-设置-显示”里面设置分辨率了">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux笔记">
+<meta property="og:url" content="https://gitee.com/icmyfuture/icmyfuture/2017/06/16/linux-note/index.html">
+<meta property="og:site_name" content="icmyfuture">
+<meta property="og:description" content="安装CentOS安装VirtualBox+CentOS 设备-&amp;gt;安装增强功能打开目录run/media/root/VBoxAddons…，终端运行sh VBoxLinuxAdditions.run，重启后就可以在”应用程序-系统工具-设置-显示”里面设置分辨率了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-08-10T14:48:41.174Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux笔记">
+<meta name="twitter:description" content="安装CentOS安装VirtualBox+CentOS 设备-&amp;gt;安装增强功能打开目录run/media/root/VBoxAddons…，终端运行sh VBoxLinuxAdditions.run，重启后就可以在”应用程序-系统工具-设置-显示”里面设置分辨率了">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gitee.com/icmyfuture/icmyfuture/2017/06/16/linux-note/"/>
+
+
+
+
+
+  <title>Linux笔记 | icmyfuture</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">icmyfuture</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Nothing is true, everthing is permitted</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input" placeholder="search my blog...">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://gitee.com/icmyfuture/icmyfuture/2017/06/16/linux-note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="iDu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icmyfuture">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-16T16:31:41+08:00">
+                2017-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technology/" itemprop="url" rel="index">
+                    <span itemprop="name">Technology</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="安装CentOS"><a href="#安装CentOS" class="headerlink" title="安装CentOS"></a>安装CentOS</h1><h2 id="安装VirtualBox-CentOS"><a href="#安装VirtualBox-CentOS" class="headerlink" title="安装VirtualBox+CentOS"></a><a href="http://www.linuxdown.net/install/setup/2015/0122/3798.html" target="_blank" rel="noopener">安装VirtualBox</a>+<a href="http://www.linuxdown.net/CentOS/2016/0110/4330.html" target="_blank" rel="noopener">CentOS</a></h2><ul>
+<li>设备-&gt;安装增强功能<br>打开目录run/media/root/VBoxAddons…，<br>终端运行<code>sh VBoxLinuxAdditions.run</code>，<br>重启后就可以在”应用程序-系统工具-设置-显示”里面设置分辨率了<a id="more"></a></li>
+<li><p>VitualBox 扩容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmd</span><br><span class="line">cd c:\program files\oracle\vitualbox\</span><br><span class="line">VboxManage.exe modifyhd &quot;name.vdi&quot; --resize NUM_IN_MB (20480 means 20G)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>网络配置<br>Host-Only 链接到本机 VirtualBox Host-Only Ethernet Adapter（192.168.56.1）<br>NAT 本地网络转换到虚拟机内，使得虚拟机与本机具有相同的网络访问能力<br>桥接网卡 连接到本地路由网络并分配地址，使得本地路由下的机器虚拟机能够互相访问</p>
+</li>
+<li><p>CentOS 7.5.1804 host-only无法正常动态分配地址<br><code>cd /etc/sysconfig/network-scripts/</code><br><code>vi ifcfg-enp0s3</code><br>修改其内容如下，然后<code>systemctl restart network.service</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">TYPE=&quot;Ethernet&quot;</span><br><span class="line">BOOTPROTO=&quot;dhcp&quot;</span><br><span class="line">DEFROUTE=&quot;yes&quot;</span><br><span class="line">PEERDNS=&quot;yes&quot;</span><br><span class="line">PEERROUTES=&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6INIT=&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF=&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV6_PEERDNS=&quot;yes&quot;</span><br><span class="line">IPV6_PEERROUTES=&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">NAME=&quot;enp0s3&quot;</span><br><span class="line">UUID=&quot;a57d4898-6803-49dc-8cd9-01035897cc69&quot;</span><br><span class="line">DEVICE=&quot;enp0s3&quot;</span><br><span class="line">ONBOOT=&quot;yes&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a><a href="https://www.centoschina.cn/command/help/2493.html" target="_blank" rel="noopener">Linux常用命令</a></h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ du -h #查看本目录下文件夹大小(--max-depth=? 可指定目录层级，默认1)</span><br><span class="line">$ du -hs #查看本目录大小</span><br><span class="line">$ ls -lah #查看本目录下文件大小</span><br><span class="line">$ rename .uc .mp3 *.uc #将目录下所有uc文件更改为mp3</span><br><span class="line">$ ln -s /opt/solr-5.5.3 /opt/solr #创建软链接</span><br><span class="line">$ crontab -e 与 chkconfig --list</span><br><span class="line">$ find . -iname &quot;*.java&quot; -type f -exec gsed -i &apos;1s/^/123\n/&apos; &#123;&#125; \; # 在本目录下所有java文件开头插入新行，内容为123</span><br></pre></td></tr></table></figure>
+<h1 id="CentOS环境"><a href="#CentOS环境" class="headerlink" title="CentOS环境"></a>CentOS环境</h1><h2 id="缺少wget以及net-tools-无法使用command-ifconfig"><a href="#缺少wget以及net-tools-无法使用command-ifconfig" class="headerlink" title="缺少wget以及net-tools(无法使用command:ifconfig)"></a>缺少wget以及net-tools(无法使用command:ifconfig)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install net-tools</span><br><span class="line">$ yum -y install wget</span><br></pre></td></tr></table></figure>
+<h2 id="修改yum源"><a href="#修改yum源" class="headerlink" title="修改yum源"></a>修改yum源</h2><p>centos7<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ cd /etc/yum.repos.d</span><br><span class="line">$ mv CentOS-Base.repo CentOS-Base.repo.bak</span><br><span class="line">$ wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo #下载阿里源的文件</span><br><span class="line"># 或者</span><br><span class="line">$ wget -O CentOS-Base.repo http://mirrors.163.com/.help/CentOS7-Base-163.repo #下载163源的文件</span><br><span class="line">$ yum clean all  #清理缓存</span><br><span class="line">$ yum makecache #重新生成缓存</span><br><span class="line"># 使用阿里repel源：https://www.cnblogs.com/renpingsheng/p/7845096.html</span><br></pre></td></tr></table></figure></p>
+<p>centos8<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ mv /etc/yum.repos.d /etc/yum.repos.d.backup</span><br><span class="line">$ mkdir /etc/yum.repos.d</span><br><span class="line">$ wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-8.repo</span><br><span class="line">$ yum clean all</span><br><span class="line">$ yum makecache</span><br><span class="line">$ yum update -y</span><br><span class="line">$ yum install -y vim</span><br></pre></td></tr></table></figure></p>
+<h2 id="使用xshell-xftp"><a href="#使用xshell-xftp" class="headerlink" title="使用xshell+xftp"></a>使用xshell+xftp</h2><ul>
+<li>SN：101210-450789-147200</li>
+<li>xftp实现文件互传</li>
+<li>xshell用于终端连接</li>
+</ul>
+<h2 id="VIM配置"><a href="#VIM配置" class="headerlink" title="VIM配置"></a><a href="http://macshuo.com/?tag=vim" target="_blank" rel="noopener">VIM配置</a></h2><p><code>$ yum install -y vim</code><br><a href="http://blog.csdn.net/genglei1022/article/details/6331616" target="_blank" rel="noopener">http://blog.csdn.net/genglei1022/article/details/6331616</a><br><a href="http://www.cnblogs.com/tzhangofseu/archive/2011/12/17/2290955.html" target="_blank" rel="noopener">http://www.cnblogs.com/tzhangofseu/archive/2011/12/17/2290955.html</a><br>设置tab为4个空格<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set ts=4</span><br><span class="line">set expandtab</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h2><ul>
+<li><code>yum -y install zsh</code></li>
+<li>安装oh my zsh: <code>$ sh -c &quot;$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)&quot;</code></li>
+<li>配置zsh: vim ~/.zshrc</li>
+</ul>
+<h2 id="iterm2-配色"><a href="#iterm2-配色" class="headerlink" title="iterm2 配色"></a><a href="http://yijiebuyi.com/blog/9c6419897949a7935d0fdec74cb7c61b.html" target="_blank" rel="noopener">iterm2 配色</a></h2><h2 id="firewalld"><a href="#firewalld" class="headerlink" title="firewalld"></a><a href="https://havee.me/linux/2015-01/using-firewalls-on-centos-7.html" target="_blank" rel="noopener">firewalld</a></h2><ul>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install firewalld</span><br><span class="line">$ systemctl unmask firewalld</span><br><span class="line">$ systemctl enable firewalld</span><br><span class="line">$ systemctl start firewalld</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询开启端口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ firewall-cmd --query-port=80/tcp</span><br><span class="line">$ firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line">$ firewall-cmd --add-port=80/tcp</span><br><span class="line">$ firewall-cmd --reload</span><br><span class="line">$ firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Telnet-TelnetServer"><a href="#Telnet-TelnetServer" class="headerlink" title="Telnet/TelnetServer"></a><a href="http://www.cnblogs.com/xlmeng1988/archive/2012/04/24/telnet-server.html" target="_blank" rel="noopener">Telnet/TelnetServer</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y install telnet</span><br><span class="line">$ yum -y install telnet-server</span><br></pre></td></tr></table></figure>
+<h2 id="更新locate数据库"><a href="#更新locate数据库" class="headerlink" title="更新locate数据库"></a>更新locate数据库</h2><p>如果未安装则执行 <code>yum -y install mlocate</code>, 然后使用<code>updatedb</code>进行更新，使用<code>locate</code>进行查找</p>
+<h2 id="设置bash-alias"><a href="#设置bash-alias" class="headerlink" title="设置bash alias"></a>设置bash alias</h2><p>系统级：/etc/bash.bashrc<br>用户级：~/.bashrc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~</span><br><span class="line">$ vim .bashrc</span><br><span class="line">$ source .bashrc</span><br></pre></td></tr></table></figure></p>
+<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a><a href="http://blog.csdn.net/cscmaker/article/details/7261921" target="_blank" rel="noopener">设置环境变量</a></h2><p>系统级：/etc/profile<br>用户级：~/.profile<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~</span><br><span class="line">$ vim .profile</span><br><span class="line">$ source .profile</span><br></pre></td></tr></table></figure></p>
+<h2 id="swap空间"><a href="#swap空间" class="headerlink" title="swap空间"></a><a href="https://www.cnblogs.com/marixh/p/10601497.html" target="_blank" rel="noopener">swap空间</a></h2><h2 id="网络参数调优"><a href="#网络参数调优" class="headerlink" title="网络参数调优"></a>网络参数调优</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sysctl -a|grep tcp #查看tcp相关参数</span><br><span class="line">$ vim /etc/sysctl.conf #修改</span><br><span class="line">$ sysctl -p #修改后重新加载</span><br></pre></td></tr></table></figure>
+<p>参数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># socket缓冲</span></span><br><span class="line">net.core.rmem_max=16777216</span><br><span class="line">net.core.wmem_max=16777216</span><br><span class="line"><span class="comment"># 接收缓冲自动调整</span></span><br><span class="line">net.ipv4.tcp_moderate_rcvbuf=1</span><br><span class="line"><span class="comment"># tcp读写缓冲</span></span><br><span class="line">net.ipv4.tcp_rmem=4096 87380 16777216</span><br><span class="line">net.ipv4.tcp_wmem=4096 65536 16777216</span><br><span class="line"><span class="comment"># syn积压队列</span></span><br><span class="line">net.ipv4.tcp_max_syn_backlog=4096</span><br><span class="line"><span class="comment"># 监听积压队列</span></span><br><span class="line">net.core.somaxconn=1024</span><br><span class="line"><span class="comment"># 设备积压队列</span></span><br><span class="line">net.core.netdev_max_backlog=10000</span><br><span class="line"><span class="comment"># TCP拥塞控制</span></span><br><span class="line">net.ipv4.tcp_congestion_control=cubic</span><br><span class="line"><span class="comment"># TCP选项</span></span><br><span class="line">net.ipv4.tcp_sack=1</span><br><span class="line">net.ipv4.tcp_fack=1</span><br><span class="line">net.ipv4.tcp_tw_reuse=1</span><br><span class="line">net.ipv4.tcp_tw_recycle=0</span><br><span class="line"><span class="comment"># 网络接口</span></span><br><span class="line">ipconfig eth0 txqueuelen 10000</span><br></pre></td></tr></table></figure></p>
+<h1 id="CentOS软件"><a href="#CentOS软件" class="headerlink" title="CentOS软件"></a>CentOS软件</h1><h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p><code>yum -y install git</code><br>本地新建文件夹，推送到远端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cd &lt;localdir&gt;</span><br><span class="line">$ git init</span><br><span class="line">$ git add .</span><br><span class="line">$ git commit -m &apos;message&apos;</span><br><span class="line">$ git remote add origin &lt;url&gt;</span><br><span class="line">$ git push -u origin master</span><br></pre></td></tr></table></figure></p>
+<h2 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a><a href="http://www.centoscn.com/image-text/install/2015/1222/6560.html" target="_blank" rel="noopener">PHP</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ yum install php (安装php同时会安装apache httpd)</span><br><span class="line">$ systemctl enable httpd.service （配置开机启动httpd）</span><br></pre></td></tr></table></figure>
+<h2 id="C-C-开发套件"><a href="#C-C-开发套件" class="headerlink" title="C/C++开发套件"></a>C/C++开发套件</h2><p><code>$ yum groupinstall &quot;Development Tools&quot;</code></p>
+<h2 id="MySql"><a href="#MySql" class="headerlink" title="MySql"></a><a href="http://blog.csdn.net/czmchen/article/details/46645763" target="_blank" rel="noopener">MySql</a></h2><ul>
+<li><a href="http://blog.csdn.net/inslow/article/details/54291182" target="_blank" rel="noopener">修改默认密码</a></li>
+<li><a href="http://wilr.iteye.com/blog/2168659" target="_blank" rel="noopener">集群配置</a></li>
+<li><a href="http://www.cr173.com/soft/126913.html" target="_blank" rel="noopener">安装Windows下客户端SQLyog</a></li>
+</ul>
+<h2 id="MemCached"><a href="#MemCached" class="headerlink" title="MemCached"></a><a href="http://www.cnblogs.com/zgx/archive/2011/08/10/2134097.html" target="_blank" rel="noopener">MemCached</a></h2><h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a><a href="http://www.cnblogs.com/_popc/p/3684835.html" target="_blank" rel="noopener">Redis</a></h2><p><a href="https://www.cnblogs.com/skyessay/p/6433349.html" target="_blank" rel="noopener">开机自启动redis服务(yum install方式无需设置)</a><br><a href="http://www.redis.net.cn/" target="_blank" rel="noopener">redis cn</a></p>
+<ul>
+<li><p>安装/服务启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ yum install -y redis</span><br><span class="line">$ systemctl enable redis</span><br><span class="line">$ systemctl start redis</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>它机访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># bind 127.0.0.1</span><br><span class="line">protected-mode no</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>firewall-cmd开启端口</p>
+</li>
+<li>设置密码: /etc/redis.conf<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requirepass ****</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="NodeJS"><a href="#NodeJS" class="headerlink" title="NodeJS"></a><a href="http://lovebeyond.iteye.com/blog/1770598" target="_blank" rel="noopener">NodeJS</a></h2><p><code>$ yum install nodejs npm</code></p>
+<h2 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a><a href="http://zhangge.net/4493.html" target="_blank" rel="noopener">MongoDB</a></h2><p><a href="http://blog.csdn.net/huwei2003/article/details/40507611" target="_blank" rel="noopener">MongoDB开机自启动</a></p>
+<h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a><a href="http://jingyan.baidu.com/article/aa6a2c14dc36640d4d19c47e.html" target="_blank" rel="noopener">Nginx</a></h2><ul>
+<li>CentOS中nginx默认配置的位置是:/etc/nginx/conf.d/default.conf</li>
+<li><a href="http://www.cnblogs.com/savorboard/p/dotnet-core-publish-nginx.html" target="_blank" rel="noopener">ASP.NET Core 部署到CentOS，使用Nginx反向代理</a></li>
+<li><a href="http://www.cnblogs.com/jacktang/p/3669115.html" target="_blank" rel="noopener">nginx反代及负载</a></li>
+<li><a href="https://www.cnblogs.com/piscesLoveCc/p/5867900.html" target="_blank" rel="noopener">nginx开机自启动</a></li>
+<li><p><a href="https://stackoverflow.com/questions/18480201/ubuntu-nginx-emerg-bind-to-0-0-0-080-failed-13-permission-denied" target="_blank" rel="noopener">端口开机自启动无法绑定</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo semanage port -l | grep http_port_t</span><br><span class="line">$ sudo semanage port -a -t http_port_t  -p tcp 8024</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>反向代理错误: failed (13: Permission denied) while connecting to upstream</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ setsebool httpd_can_network_connect on -P</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://zhih.me/nginx-http2-https/" target="_blank" rel="noopener">https支持</a></p>
+</li>
+<li><a href="https://blog.csdn.net/yzhou86/article/details/41247387" target="_blank" rel="noopener">子站点映射</a></li>
+</ul>
+<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a><a href="https://www.docker.com/" target="_blank" rel="noopener">Docker</a></h2><ul>
+<li><a href="https://hub.docker.com/" target="_blank" rel="noopener">Hub</a></li>
+<li>使用阿里云镜像<br><a href="https://blog.csdn.net/qq_30259339/article/details/52400673" target="_blank" rel="noopener">https://blog.csdn.net/qq_30259339/article/details/52400673</a><br><a href="https://hpc.aliyun.com/doc/docker" target="_blank" rel="noopener">https://hpc.aliyun.com/doc/docker</a><br><a href="https://aotu.io/notes/2016/02/27/docker/" target="_blank" rel="noopener">https://aotu.io/notes/2016/02/27/docker/</a></li>
+<li><a href="https://cr.console.aliyun.com/?spm=5176.1971733.0.2.hFB1YK#/docker/image/list" target="_blank" rel="noopener">个人阿里云docker-centos仓库地址</a></li>
+<li><p>配置nginx负载均衡：使用2个docker container</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -p 6001:5000 --restart=always -t hello:1.0</span><br><span class="line">$ docker run -d -p 6002:5000 --restart=always -t hello:1.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Running .Net Core on Docker<br><a href="https://medium.com/trafi-tech-beat/running-net-core-on-docker-c438889eb5a#.7ootzhuze" target="_blank" rel="noopener">https://medium.com/trafi-tech-beat/running-net-core-on-docker-c438889eb5a#.7ootzhuze</a><br><a href="http://dockone.io/article/1369" target="_blank" rel="noopener">http://dockone.io/article/1369</a><br><a href="https://stormpath.com/blog/tutorial-deploy-asp-net-core-on-linux-with-docker" target="_blank" rel="noopener">https://stormpath.com/blog/tutorial-deploy-asp-net-core-on-linux-with-docker</a></p>
+</li>
+<li><p>出现错误：docker-runc not installed on system</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/systemd/system/docker.service</span><br><span class="line"># 添加以下三行到ExecStart的参数中</span><br><span class="line"># --add-runtime docker-runc=/usr/libexec/docker/docker-runc-current \</span><br><span class="line"># --default-runtime=docker-runc \</span><br><span class="line"># --userland-proxy-path=/usr/libexec/docker/docker-proxy-current \</span><br><span class="line">$ systemctl daemon-reload</span><br><span class="line">$ systemctl restart docker</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://blog.csdn.net/Tomcat_Lu/article/details/112414518" target="_blank" rel="noopener">升级docker</a></p>
+</li>
+<li><a href="https://www.cnblogs.com/-wenli/p/14055021.html" target="_blank" rel="noopener">清理docker空间</a></li>
+</ul>
+<h2 id="JDK-amp-amp-Tomcat-安装"><a href="#JDK-amp-amp-Tomcat-安装" class="headerlink" title="JDK &amp;&amp; Tomcat 安装"></a><a href="http://www.linuxidc.com/Linux/2015-01/111485.htm" target="_blank" rel="noopener">JDK &amp;&amp; Tomcat 安装</a></h2><p>开机自启动配置参考<a href="https://www.cnblogs.com/ieinstein/p/7096650.html" target="_blank" rel="noopener">自启动</a></p>
+<h2 id="Tomcat"><a href="#Tomcat" class="headerlink" title="Tomcat"></a><a href="https://www.jianshu.com/p/9b18293cc796" target="_blank" rel="noopener">Tomcat</a></h2><ul>
+<li>多个springboot项目部署在同一tomcat上，出现jmx错误<br>application.properties中添加如下配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">endpoints.jmx.unique-names=true</span><br><span class="line">spring.jmx.default-domain=唯一的名字</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a><a href="http://blog.csdn.net/xyang81/article/details/51487939" target="_blank" rel="noopener">Maven</a></h2><p><a href="http://blog.csdn.net/oDeviloo/article/details/52050277" target="_blank" rel="noopener">POM配置节详解</a></p>
+<h2 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a><a href="http://www.linuxidc.com/Linux/2016-09/135052.htm" target="_blank" rel="noopener">Zookeeper</a></h2><p><a href="http://blog.csdn.net/u012453843/article/details/70162796" target="_blank" rel="noopener">自启动设置1</a><br><a href="http://www.bubuko.com/infodetail-2047052.html" target="_blank" rel="noopener">自启动设置2</a></p>
+<h2 id="Dubbo-Admin"><a href="#Dubbo-Admin" class="headerlink" title="Dubbo Admin"></a><a href="https://www.cnblogs.com/520playboy/p/6298289.html" target="_blank" rel="noopener">Dubbo Admin</a></h2><h2 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a><a href="http://blog.51cto.com/huwei555/1977695" target="_blank" rel="noopener">Supervisor</a></h2><p><a href="https://blog.csdn.net/xyang81/article/details/51555473" target="_blank" rel="noopener">参考</a></p>
+<p><code>/etc/init.d/supervisord</code>内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">#</span><br><span class="line"># /etc/rc.d/init.d/supervisord</span><br><span class="line">#</span><br><span class="line"># Supervisor is a client/server system that</span><br><span class="line"># allows its users to monitor and control a</span><br><span class="line"># number of processes on UNIX-like operating</span><br><span class="line"># systems.</span><br><span class="line">#</span><br><span class="line"># chkconfig: - 64 36</span><br><span class="line"># description: Supervisor Server</span><br><span class="line"># processname: supervisord</span><br><span class="line"></span><br><span class="line"># Source init functions</span><br><span class="line">. /etc/init.d/functions</span><br><span class="line"></span><br><span class="line">RETVAL=0</span><br><span class="line">prog=&quot;supervisord&quot;</span><br><span class="line">pidfile=&quot;/tmp/supervisord.pid&quot;</span><br><span class="line">lockfile=&quot;/var/lock/subsys/supervisord&quot;</span><br><span class="line"></span><br><span class="line">start()</span><br><span class="line">&#123;</span><br><span class="line">        echo -n $&quot;Starting $prog: &quot;</span><br><span class="line">        daemon --pidfile $pidfile supervisord -c /etc/supervisor/supervisord.conf</span><br><span class="line">        RETVAL=$?</span><br><span class="line">        echo</span><br><span class="line">        [ $RETVAL -eq 0 ] &amp;&amp; touch $&#123;lockfile&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">stop()</span><br><span class="line">&#123;</span><br><span class="line">        echo -n $&quot;Shutting down $prog: &quot;</span><br><span class="line">        killproc -p $&#123;pidfile&#125; /usr/bin/supervisord</span><br><span class="line">        RETVAL=$?</span><br><span class="line">        echo</span><br><span class="line">        if [ $RETVAL -eq 0 ] ; then</span><br><span class="line">                rm -f $&#123;lockfile&#125; $&#123;pidfile&#125;</span><br><span class="line">        fi</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line"></span><br><span class="line">  start)</span><br><span class="line">    start</span><br><span class="line">  ;;</span><br><span class="line"></span><br><span class="line">  stop)</span><br><span class="line">    stop</span><br><span class="line">  ;;</span><br><span class="line"></span><br><span class="line">  status)</span><br><span class="line">        status $prog</span><br><span class="line">  ;;</span><br><span class="line"></span><br><span class="line">  restart)</span><br><span class="line">    stop</span><br><span class="line">    start</span><br><span class="line">  ;;</span><br><span class="line"></span><br><span class="line">  *)</span><br><span class="line">    echo &quot;Usage: $0 &#123;start|stop|restart|status&#125;&quot;</span><br><span class="line">  ;;</span><br><span class="line"></span><br><span class="line">esac</span><br></pre></td></tr></table></figure></p>
+<p>install_supervisor.sh<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#/bin/bash</span><br><span class="line"></span><br><span class="line"># meld</span><br><span class="line">cd /opt</span><br><span class="line">wget https://pypi.python.org/packages/0f/5e/3a57c223d8faba2c3c2d69699f7e6cfdd1e5cc31e79cdd0dd48d44580b50/meld3-1.0.1.tar.gz#md5=2f045abe0ae108e3c8343172cffbe21d</span><br><span class="line">tar -zxvf meld3-1.0.1.tar.gz</span><br><span class="line">cd meld3-1.0.1</span><br><span class="line">python setup.py install</span><br><span class="line"></span><br><span class="line"># supervisor</span><br><span class="line">cd /opt</span><br><span class="line">wget https://pypi.python.org/packages/12/50/cd330d1a0daffbbe54803cb0c4c1ada892b5d66db08befac385122858eee/supervisor-3.1.4.tar.gz#md5=cb64f92409ebabf17aa0884fc407fec6</span><br><span class="line">tar -zxvf supervisor-3.1.4.tar.gz</span><br><span class="line">cd supervisor-3.1.4</span><br><span class="line">python setup.py install</span><br><span class="line"></span><br><span class="line"># config</span><br><span class="line">mkdir /etc/supervisor</span><br><span class="line">mkdir /etc/supervisor/conf.d</span><br><span class="line">echo_supervisord_conf &gt; /etc/supervisor/supervisord.conf</span><br><span class="line">chmod +x /etc/init.d/supervisord</span><br><span class="line"></span><br><span class="line"># auto-start after bootup</span><br><span class="line">chkconfig supervisord on</span><br><span class="line">service supervisord start</span><br></pre></td></tr></table></figure></p>
+<h2 id="centos7自启动系列"><a href="#centos7自启动系列" class="headerlink" title="centos7自启动系列"></a><a href="https://blog.csdn.net/qq_30171043/article/details/70610713" target="_blank" rel="noopener">centos7自启动系列</a></h2><h2 id="搬瓦工与ShadowSocks"><a href="#搬瓦工与ShadowSocks" class="headerlink" title="搬瓦工与ShadowSocks"></a>搬瓦工与ShadowSocks</h2><ul>
+<li><p><a href="https://www.bwh1.net/" target="_blank" rel="noopener">搬瓦工</a><br>搭建ss的过程可参考<a href="http://blog.sina.com.cn/s/blog_17639fae00102xat4.html" target="_blank" rel="noopener">这里</a>,优惠码为 BWH1ZBPVK 可节省6%<br>如果没有ss配置则可以看<a href="http://blog.sina.com.cn/s/blog_17639fae00102xat4.html" target="_blank" rel="noopener">这里</a><br>若使用ss-server(shadowsocks-libev)，其配置文件位于/etc/shadowsocks-libev</p>
+</li>
+<li><p><a href="https://github.com/shadowsocks" target="_blank" rel="noopener">ShadowSocks</a><br><a href="https://www.flyzy2005.com/fan-qiang/shadowsocks/ss-clients-download/" target="_blank" rel="noopener">各版本shadowsocks客户端下载地址</a><br><a href="https://www.codetd.com/article/868035" target="_blank" rel="noopener">shadowsocks manager</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ yum update -y</span><br><span class="line">$ yum install -y vim git wget screen</span><br><span class="line">$ curl -sL https://rpm.nodesource.com/setup_8.x | bash -</span><br><span class="line">$ yum install -y nodejs # 安装8.*版本的nodejs</span><br><span class="line">$ npm i -g shadowsocks-manager # npm安装shadowsocks-manager</span><br><span class="line">$ kill -9 ** # **为默认ss-server的pid</span><br><span class="line">$ ss-manager -m aes-256-cfb -u --manager-address 127.0.0.1:4004 &amp;</span><br><span class="line">$ ssmgr -c ~/.ssmgr/default.yml &amp;</span><br><span class="line">$ ssmgr -c ~/.ssmgr/webgui.yml &amp;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>default.yml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">type: s</span><br><span class="line"></span><br><span class="line">shadowsocks:</span><br><span class="line">  address: 127.0.0.1:4004</span><br><span class="line"></span><br><span class="line">manager:</span><br><span class="line">  address: 0.0.0.0:7007</span><br><span class="line">  password: &apos;123456789&apos;</span><br><span class="line"></span><br><span class="line">db: &apos;default.sqlite&apos;</span><br></pre></td></tr></table></figure></p>
+<p>webgui.yml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">type: m</span><br><span class="line"></span><br><span class="line">manager:</span><br><span class="line">  address: 0.0.0.0:7007</span><br><span class="line">  password: &apos;123456789&apos;</span><br><span class="line"></span><br><span class="line">plugins:</span><br><span class="line">  flowSaver:</span><br><span class="line">    use: true</span><br><span class="line">  user:</span><br><span class="line">    use: true</span><br><span class="line">  account:</span><br><span class="line">    use: true</span><br><span class="line">  macAccount:</span><br><span class="line">    use: true</span><br><span class="line">  email:</span><br><span class="line">    use: true</span><br><span class="line">    type: &apos;smtp&apos; # 配置 smtp</span><br><span class="line">    username: &apos;xxx&apos;</span><br><span class="line">    password: &apos;xxx&apos;</span><br><span class="line">    host: &apos;smtp.xxx.com&apos;</span><br><span class="line">  webgui:</span><br><span class="line">    use: true</span><br><span class="line">    host: &apos;0.0.0.0&apos;</span><br><span class="line">    port: &apos;80&apos; # 监听端口</span><br><span class="line">    site: &apos;http://ss.52xckl.cn&apos; # 将这里改成自己的 ip 或者域名</span><br><span class="line"></span><br><span class="line">db: &apos;webgui.sqlite&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="V2Ray-TLS解决ss无法使用的问题"><a href="#V2Ray-TLS解决ss无法使用的问题" class="headerlink" title="V2Ray+TLS解决ss无法使用的问题"></a>V2Ray+TLS解决ss无法使用的问题</h2><ol>
+<li>申请域名并支持HTTPS（使用freenom+阿里云https）<br>freenom免费域名有效期仅有1年，1年后需重新申请新的域名<br>步骤：申请域名-&gt;配置域名解析（WWW+空解析）<br>阿里云SSL免费版有效期1年，1年后需重新申请免费SSL证书<br>步骤：<br> 购买免费SSL-&gt;<br> 申请域名（手动验证）-&gt;<br> 下载txt到网站根目录（/usr/local/src/icmyfuture.github.io/.well-known/pki-validation）-&gt;<br> 下载ssl证书至nginx目录（/etc/nginx/ssl）<br> 修改nginx配置-使用新ssl证书，重启nginx</li>
+<li>安装v2ray(选TCP即可),可参考<a href="https://github.com/233boy/v2ray/wiki/V2Ray%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%9B%BE%E6%96%87%E6%95%99%E7%A8%8B" target="_blank" rel="noopener">安装</a></li>
+<li>配置nginx以支持ssl，并<a href="https://www.wervps.com/we/2541.html" target="_blank" rel="noopener">配置转发至v2ray</a><br>参考：原生搭建 部分的配置</li>
+<li>下载客户端<br>各种系统V2ray下载：<br><a href="https://github.com/v2ray/v2ray-core/releases" target="_blank" rel="noopener">下载v2ray-core</a><br><a href="https://github.com/2dust/v2rayN/releases" target="_blank" rel="noopener">下载v2rayN</a><br>对v2ray-windows-64.zip进行解压，然后将下载的V2RayN.exe复制到解压后的目录，即两个下载好的文件需要在同一目录<br>注意以管理员身份运行，可选择全局模式</li>
+</ol>
+<h1 id="安装Ubuntu"><a href="#安装Ubuntu" class="headerlink" title="安装Ubuntu"></a><a href="https://www.jianshu.com/p/417c1001a559" target="_blank" rel="noopener">安装Ubuntu</a></h1><ul>
+<li>从<a href="https://www.ubuntu.com/download/desktop" target="_blank" rel="noopener">官网</a>下载ubuntu iso<br>放入一个盘符的根目录，并解压到当前文件夹（如：放在D盘，且解压后所有文件在D盘根目录）</li>
+<li>下载 <a href="http://neosmart.net/EasyBCD/" target="_blank" rel="noopener">EasyBCD</a>, 安装</li>
+<li>Win10中，准备好一个未分配的盘符</li>
+<li>添加Ubuntu-iso引导项<br>打开EasyBCD，添加新条目-&gt;便携式/外接存储介质-&gt;ISO，名称：Ubuntu-iso，路径：选择iso所在的位置，模式：从硬盘运行 -&gt;添加条目，编辑引导菜单-&gt;保存设置</li>
+<li>重启电脑，引导界面选择Ubuntu-iso</li>
+<li>安装Ubuntu，分区配置如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">16778MB     主分区         空间起始位置  Ext3日志文件系统  /</span><br><span class="line">16778MB     逻辑分区        空间起始位置 交换空间</span><br><span class="line">263MB       逻辑分区        空间起始位置 Ext3日志文件系统 /boot</span><br><span class="line">默认         逻辑分区       空间起始位置 Ext3日志文件系统 /home</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>安装启动引导器的设备：选择/boot所在分区</p>
+<ul>
+<li>添加ubuntu引导项<br>进入Win10，打开EasyBCD，删除引导项Ubuntu-iso，添加新条目-&gt;操作系统-&gt;Linux/BSD，名称：Ubuntu，驱动器：选择/boot所在的分区，-&gt;添加条目，编辑引导菜单-&gt;保存设置</li>
+<li>重启系统，选择启动项Ubuntu进入Ubuntu系统</li>
+</ul>
+<h1 id="ubuntu环境"><a href="#ubuntu环境" class="headerlink" title="ubuntu环境"></a>ubuntu环境</h1><h2 id="shadowsocks"><a href="#shadowsocks" class="headerlink" title="shadowsocks"></a><a href="https://www.cnblogs.com/Dumblidor/p/5450248.html" target="_blank" rel="noopener">shadowsocks</a></h2><p>需要在/etc/shadowsocks/config.json里面进行配置<br>使用以下别名，以守护进程模式启动/停止ss<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alias sson=&apos;sudo sslocal -c /etc/shadowsocks/config.json -d start&apos;</span><br><span class="line">alias ssoff=&apos;sudo sslocal -c /etc/shadowsocks/config.json -d stop&apos;</span><br></pre></td></tr></table></figure></p>
+<p>在Firefox中则使用FoxyProxy来设置Socks5代理</p>
+<h2 id="无法进入ubuntu桌面"><a href="#无法进入ubuntu桌面" class="headerlink" title="无法进入ubuntu桌面"></a>无法进入ubuntu桌面</h2><p>在升级重启后，有时候会出现输入密码，但始终无法进入桌面的情况。使用<code>ctrl+alt+f2</code>进入命令行模式，登录后，使用<code>sudo apt-get install ubuntu-desktop</code>来重新安装桌面。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/16/tech-list/" rel="next" title="技术列表">
+                <i class="fa fa-chevron-left"></i> 技术列表
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/16/mac-note/" rel="prev" title="Mac笔记">
+                Mac笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="iDu" />
+          <p class="site-author-name" itemprop="name">iDu</p>
+           
+              <p class="site-description motion-element" itemprop="description">诗酒风流品花月</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/icmyfuture" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/1865769731" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装CentOS"><span class="nav-number">1.</span> <span class="nav-text">安装CentOS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装VirtualBox-CentOS"><span class="nav-number">1.1.</span> <span class="nav-text">安装VirtualBox+CentOS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux常用命令"><span class="nav-number">2.</span> <span class="nav-text">Linux常用命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CentOS环境"><span class="nav-number">3.</span> <span class="nav-text">CentOS环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#缺少wget以及net-tools-无法使用command-ifconfig"><span class="nav-number">3.1.</span> <span class="nav-text">缺少wget以及net-tools(无法使用command:ifconfig)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改yum源"><span class="nav-number">3.2.</span> <span class="nav-text">修改yum源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用xshell-xftp"><span class="nav-number">3.3.</span> <span class="nav-text">使用xshell+xftp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VIM配置"><span class="nav-number">3.4.</span> <span class="nav-text">VIM配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装zsh"><span class="nav-number">3.5.</span> <span class="nav-text">安装zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iterm2-配色"><span class="nav-number">3.6.</span> <span class="nav-text">iterm2 配色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#firewalld"><span class="nav-number">3.7.</span> <span class="nav-text">firewalld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Telnet-TelnetServer"><span class="nav-number">3.8.</span> <span class="nav-text">Telnet/TelnetServer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新locate数据库"><span class="nav-number">3.9.</span> <span class="nav-text">更新locate数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置bash-alias"><span class="nav-number">3.10.</span> <span class="nav-text">设置bash alias</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置环境变量"><span class="nav-number">3.11.</span> <span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#swap空间"><span class="nav-number">3.12.</span> <span class="nav-text">swap空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络参数调优"><span class="nav-number">3.13.</span> <span class="nav-text">网络参数调优</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CentOS软件"><span class="nav-number">4.</span> <span class="nav-text">CentOS软件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git"><span class="nav-number">4.1.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP"><span class="nav-number">4.2.</span> <span class="nav-text">PHP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-C-开发套件"><span class="nav-number">4.3.</span> <span class="nav-text">C/C++开发套件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySql"><span class="nav-number">4.4.</span> <span class="nav-text">MySql</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MemCached"><span class="nav-number">4.5.</span> <span class="nav-text">MemCached</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis"><span class="nav-number">4.6.</span> <span class="nav-text">Redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NodeJS"><span class="nav-number">4.7.</span> <span class="nav-text">NodeJS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MongoDB"><span class="nav-number">4.8.</span> <span class="nav-text">MongoDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx"><span class="nav-number">4.9.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker"><span class="nav-number">4.10.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDK-amp-amp-Tomcat-安装"><span class="nav-number">4.11.</span> <span class="nav-text">JDK &amp;&amp; Tomcat 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tomcat"><span class="nav-number">4.12.</span> <span class="nav-text">Tomcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maven"><span class="nav-number">4.13.</span> <span class="nav-text">Maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zookeeper"><span class="nav-number">4.14.</span> <span class="nav-text">Zookeeper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dubbo-Admin"><span class="nav-number">4.15.</span> <span class="nav-text">Dubbo Admin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Supervisor"><span class="nav-number">4.16.</span> <span class="nav-text">Supervisor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#centos7自启动系列"><span class="nav-number">4.17.</span> <span class="nav-text">centos7自启动系列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搬瓦工与ShadowSocks"><span class="nav-number">4.18.</span> <span class="nav-text">搬瓦工与ShadowSocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#V2Ray-TLS解决ss无法使用的问题"><span class="nav-number">4.19.</span> <span class="nav-text">V2Ray+TLS解决ss无法使用的问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装Ubuntu"><span class="nav-number">5.</span> <span class="nav-text">安装Ubuntu</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ubuntu环境"><span class="nav-number">6.</span> <span class="nav-text">ubuntu环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shadowsocks"><span class="nav-number">6.1.</span> <span class="nav-text">shadowsocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无法进入ubuntu桌面"><span class="nav-number">6.2.</span> <span class="nav-text">无法进入ubuntu桌面</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iDu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'manual') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
