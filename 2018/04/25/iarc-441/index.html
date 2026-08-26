@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/6.1.14/fancybox/fancybox.css" integrity="sha256-mdaMxrItEW6hMIVJJNPKuX0B7KCSJQVEv3mVY4N2we4=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"gitee.com","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"b2t":false,"scrollpercent":false},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"night eighties"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideDownIn"}},"i18n":{"placeholder":"بحث...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"manual"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简述本文中，将配置solr来提供搜索服务，并修改iarc-data来使用solr。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构之旅-扩展-数据-搜索-Solr">
+<meta property="og:url" content="https://gitee.com/icmyfuture/icmyfuture/2018/04/25/iarc-441/index.html">
+<meta property="og:site_name" content="icmyfuture">
+<meta property="og:description" content="简述本文中，将配置solr来提供搜索服务，并修改iarc-data来使用solr。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-04-25T02:28:26.000Z">
+<meta property="article:modified_time" content="2024-10-08T01:40:39.721Z">
+<meta property="article:author" content="iDu">
+<meta property="article:tag" content="Architect">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://gitee.com/icmyfuture/icmyfuture/2018/04/25/iarc-441/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://gitee.com/icmyfuture/icmyfuture/2018/04/25/iarc-441/","path":"2018/04/25/iarc-441/","title":"架构之旅-扩展-数据-搜索-Solr"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>架构之旅-扩展-数据-搜索-Solr | icmyfuture</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/6.1.14/fancybox/fancybox.umd.js" integrity="sha256-QnJV4HT5r8i89ovZGRD86iynZqHerEbT2xt69vDM36I=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">icmyfuture</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Nothing is true, everthing is permitted</p>
+      <img class="custom-logo-image" src="/%5Bobject%20Object%5D" alt="icmyfuture">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="بحث" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>معلومات</a></li><li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="fa fa-th fa-fw"></i>التصنيفات</a></li><li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="fa fa-archive fa-fw"></i>الأرشيفات</a></li><li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tags fa-fw"></i>الوسوم</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>بحث
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="بحث..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          المحتويات
+        </li>
+        <li class="sidebar-nav-overview">
+          عام
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-number">3.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%8F%91"><span class="nav-number">4.</span> <span class="nav-text">开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85solr"><span class="nav-number">4.1.</span> <span class="nav-text">安装solr</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">集群配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-%E5%81%9C%E6%AD%A2-%E5%88%AB%E5%90%8D"><span class="nav-number">4.3.</span> <span class="nav-text">启动&#x2F;停止 别名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%9B%AE%E5%BD%95"><span class="nav-number">4.4.</span> <span class="nav-text">配置目录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0-%E6%9B%B4%E6%96%B0%E9%85%8D%E7%BD%AE"><span class="nav-number">4.4.1.</span> <span class="nav-text">上传&#x2F;更新配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4configset%EF%BC%88%E9%9D%9E%E5%BF%85%E9%A1%BB%EF%BC%89"><span class="nav-number">4.4.2.</span> <span class="nav-text">删除configset（非必须）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%85%8D%E7%BD%AE%EF%BC%8C%E5%88%9B%E5%BB%BACollection"><span class="nav-number">4.4.3.</span> <span class="nav-text">基于配置，创建Collection</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D"><span class="nav-number">4.5.</span> <span class="nav-text">中文分词</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E9%9C%80%E8%A6%81%E7%9A%84jar%E5%8C%85%E8%87%B3webapp"><span class="nav-number">4.5.1.</span> <span class="nav-text">复制需要的jar包至webapp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%B9%B6%E6%9B%B4%E6%96%B0%E9%85%8D%E7%BD%AE"><span class="nav-number">4.5.2.</span> <span class="nav-text">修改并更新配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5"><span class="nav-number">4.6.</span> <span class="nav-text">数据导入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E9%9C%80%E8%A6%81%E7%9A%84jar%E5%8C%85%E8%87%B3webapp-1"><span class="nav-number">4.6.1.</span> <span class="nav-text">复制需要的jar包至webapp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%B9%B6%E6%9B%B4%E6%96%B0%E9%85%8D%E7%BD%AE-1"><span class="nav-number">4.6.2.</span> <span class="nav-text">修改并更新配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E5%AF%BC%E5%85%A5"><span class="nav-number">4.6.3.</span> <span class="nav-text">手动导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%AF%BC%E5%85%A5"><span class="nav-number">4.6.4.</span> <span class="nav-text">定时导入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot%E4%BD%BF%E7%94%A8solr"><span class="nav-number">4.7.</span> <span class="nav-text">spring boot使用solr</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#application-properties"><span class="nav-number">4.7.1.</span> <span class="nav-text">application.properties</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pom-xml"><span class="nav-number">4.7.2.</span> <span class="nav-text">pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#solrdocument"><span class="nav-number">4.7.3.</span> <span class="nav-text">solrdocument</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#repository"><span class="nav-number">4.7.4.</span> <span class="nav-text">repository</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UserServiceImpl"><span class="nav-number">4.7.5.</span> <span class="nav-text">UserServiceImpl</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95solr-colletion%E7%9A%84search%E5%8A%9F%E8%83%BD"><span class="nav-number">5.1.</span> <span class="nav-text">测试solr colletion的search功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8solr%E5%90%8E%E7%9A%84service%E5%8A%9F%E8%83%BD"><span class="nav-number">5.2.</span> <span class="nav-text">测试使用solr后的service功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">6.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0linux%E4%B8%8Btomcat%E4%B8%AD"><span class="nav-number">6.1.</span> <span class="nav-text">部署到linux下tomcat中</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="iDu"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">iDu</p>
+  <div class="site-description" itemprop="description">诗酒风流品花月</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">المقالات</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">التصنيفات</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">الوسوم</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/icmyfuture" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;icmyfuture" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/1865769731" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;1865769731" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://gitee.com/icmyfuture/icmyfuture/2018/04/25/iarc-441/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="iDu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icmyfuture">
+      <meta itemprop="description" content="诗酒风流品花月">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="架构之旅-扩展-数据-搜索-Solr | icmyfuture">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          架构之旅-扩展-数据-搜索-Solr
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">نُشر في</span>
+
+      <time title="أُنشأ: 2018-04-25 10:28:26" itemprop="dateCreated datePublished" datetime="2018-04-25T10:28:26+08:00">2018-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">في</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Technology/" itemprop="url" rel="index"><span itemprop="name">Technology</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h1><p>本文中，将配置<code>solr</code>来提供搜索服务，并修改<code>iarc-data</code>来使用solr。<span id="more"></span></p>
+<h1 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h1><p><a target="_blank" rel="noopener" href="https://github.com/icmyfuture/iarc/tree/master/iarc-data">iarc-data</a></p>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>IDE: IntelliJ IDEA<br>JDK: 1.8.0_u162<br>MiddleWare: Solr 7.3.0<br>App Coordinator: Zookeeper 3.4.10<br>DB: MySQL</p>
+<h1 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h1><h2 id="安装solr"><a href="#安装solr" class="headerlink" title="安装solr"></a>安装solr</h2><p>从<a target="_blank" rel="noopener" href="http://www.apache.org/dyn/closer.lua/lucene/solr/7.3.0">官网</a>下载并复制到centos下<code>/opt</code>目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd /opt</span><br><span class="line">$ tar -zxvf solr-7.3.0.tgz</span><br><span class="line">$ ln -s /opt/solr-7.3.0 /opt/solr</span><br></pre></td></tr></table></figure>
+<h2 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h2><p><code>$ vim /opt/solr/bin/solr.in.sh</code>, 找到如下配置节并修改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SOLR_HOST=&quot;192.168.56.103&quot;</span><br><span class="line">SOLR_TIMEZONE=&quot;UTC+8&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动-停止-别名"><a href="#启动-停止-别名" class="headerlink" title="启动&#x2F;停止 别名"></a>启动&#x2F;停止 别名</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alias solrstart=&#x27;/opt/solr/bin/solr start -cloud -p 8983 -s &quot;/opt/solr/server/solr&quot; -z localhost:2181 -force&#x27;</span><br><span class="line">alias solrstop=&#x27;/opt/solr/bin/solr stop&#x27;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置目录"><a href="#配置目录" class="headerlink" title="配置目录"></a>配置目录</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir /opt/solr/conf</span><br><span class="line">$ cp /opt/solr/server/solr/configsets/_default/conf /opt/solr/conf/user -r</span><br></pre></td></tr></table></figure>
+
+<h3 id="上传-更新配置"><a href="#上传-更新配置" class="headerlink" title="上传&#x2F;更新配置"></a>上传&#x2F;更新配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /opt/solr/bin/solr zk -upconfig -z localhost:2181 -d /opt/solr/conf/user -n user</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除configset（非必须）"><a href="#删除configset（非必须）" class="headerlink" title="删除configset（非必须）"></a>删除configset（非必须）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.56.103:8983/solr/admin/configs?action=DELETE&amp;name=user</span><br></pre></td></tr></table></figure>
+
+<h3 id="基于配置，创建Collection"><a href="#基于配置，创建Collection" class="headerlink" title="基于配置，创建Collection"></a>基于配置，创建Collection</h3><p>地址：<a target="_blank" rel="noopener" href="http://192.168.56.103:8983/solr/#/~collections">http://192.168.56.103:8983/solr/#/~collections</a><br>操作：add collection<br>选择：config set - user, 其余为默认</p>
+<h2 id="中文分词"><a href="#中文分词" class="headerlink" title="中文分词"></a>中文分词</h2><h3 id="复制需要的jar包至webapp"><a href="#复制需要的jar包至webapp" class="headerlink" title="复制需要的jar包至webapp"></a>复制需要的jar包至webapp</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /opt/solr-7.3.0/contrib/analysis-extras/lucene-libs/lucene-analyzers-smartcn-7.3.0.jar /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改并更新配置"><a href="#修改并更新配置" class="headerlink" title="修改并更新配置"></a>修改并更新配置</h3><p><code>vim /opt/solr/conf/user/managed-schema</code>, 添加内容如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;fieldType name=&quot;text_cn&quot; class=&quot;solr.TextField&quot; positionIncrementGap=&quot;100&quot;&gt;</span><br><span class="line">  &lt;analyzer type=&quot;index&quot;&gt;</span><br><span class="line">    &lt;tokenizer class=&quot;org.apache.lucene.analysis.cn.smart.HMMChineseTokenizerFactory&quot;/&gt;</span><br><span class="line">  &lt;/analyzer&gt;</span><br><span class="line">  &lt;analyzer type=&quot;query&quot;&gt;</span><br><span class="line">    &lt;tokenizer class=&quot;org.apache.lucene.analysis.cn.smart.HMMChineseTokenizerFactory&quot;/&gt;</span><br><span class="line">  &lt;/analyzer&gt;</span><br><span class="line">&lt;/fieldType&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据导入"><a href="#数据导入" class="headerlink" title="数据导入"></a>数据导入</h2><h3 id="复制需要的jar包至webapp-1"><a href="#复制需要的jar包至webapp-1" class="headerlink" title="复制需要的jar包至webapp"></a>复制需要的jar包至webapp</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cp /opt/solr/dist/solr-dataimporthandler-* /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/</span><br><span class="line">$ cp /opt/mycat/lib/mysql-connector-java-5.1.35.jar /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改并更新配置-1"><a href="#修改并更新配置-1" class="headerlink" title="修改并更新配置"></a>修改并更新配置</h3><ul>
+<li><code>$ vim /opt/solr/conf/user/solrconfig.xml</code>, 添加内容如下</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;requestHandler name=&quot;/dataimport&quot; class=&quot;org.apache.solr.handler.dataimport.DataImportHandler&quot;&gt;</span><br><span class="line">  &lt;lst name=&quot;defaults&quot;&gt;</span><br><span class="line">    &lt;str name=&quot;config&quot;&gt;db-data-config.xml&lt;/str&gt;</span><br><span class="line">  &lt;/lst&gt;</span><br><span class="line">&lt;/requestHandler&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>$ vim /opt/solr/conf/user/db-data-config.xml</code>, 内容如下</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;dataConfig&gt;</span><br><span class="line">    &lt;dataSource name=&quot;ijava&quot; type=&quot;JdbcDataSource&quot; driver=&quot;com.mysql.jdbc.Driver&quot; url=&quot;jdbc:mysql://192.168.56.103:3306/ijava&quot; user=&quot;root&quot; password=&quot;**&quot; /&gt;</span><br><span class="line">    &lt;document&gt;</span><br><span class="line">        &lt;entity name=&quot;user&quot; dataSource=&quot;ijava&quot; query=&quot;select id, name from ijava.user;&quot;&gt;</span><br><span class="line">        &lt;/entity&gt;</span><br><span class="line">    &lt;/document&gt;</span><br><span class="line">&lt;/dataConfig&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>$ vim /opt/solr/conf/user/managed-schema</code>, 内容如下</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;schema name=&quot;user&quot; version=&quot;1.6&quot;&gt;</span><br><span class="line">    &lt;uniqueKey&gt;id&lt;/uniqueKey&gt;</span><br><span class="line">    &lt;field name=&quot;id&quot; type=&quot;string&quot; indexed=&quot;true&quot; stored=&quot;true&quot; required=&quot;true&quot; multiValued=&quot;false&quot; /&gt;</span><br><span class="line">    &lt;field name=&quot;name&quot; type=&quot;text_cn&quot; indexed=&quot;true&quot; stored=&quot;true&quot; required=&quot;true&quot; multiValued=&quot;false&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="手动导入"><a href="#手动导入" class="headerlink" title="手动导入"></a>手动导入</h3><p>地址：<a target="_blank" rel="noopener" href="http://172.16.0.239:8101/solr/index.html#/user/dataimport//dataimport">http://172.16.0.239:8101/solr/index.html#/user/dataimport//dataimport</a><br>选择：full-import - commit , clik <code>Execute</code><br>注意：如果点击’Dataimport’仍然提示<br>“The solrconfig.xml file for this index does not have an operational DataImportHandler defined!”, 可以直接使用 api来导入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.56.103:8983/solr/user/dataimport?command=full-import&amp;verbose=false&amp;clean=false&amp;commit=true&amp;optimize=false&amp;core=user&amp;indent=on&amp;wt=json</span><br></pre></td></tr></table></figure>
+
+<h3 id="定时导入"><a href="#定时导入" class="headerlink" title="定时导入"></a>定时导入</h3><p><code>crontab -e</code>, 添加内容如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/5  * * * * curl &quot;http://192.168.56.103:8983/solr/user/dataimport?command=full-import&amp;verbose=false&amp;clean=false&amp;commit=true&amp;optimize=false&amp;core=user&amp;indent=on&amp;wt=json&quot; &gt; /dev/null 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<h2 id="spring-boot使用solr"><a href="#spring-boot使用solr" class="headerlink" title="spring boot使用solr"></a>spring boot使用solr</h2><h3 id="application-properties"><a href="#application-properties" class="headerlink" title="application.properties"></a>application.properties</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">spring.data.solr.host=http://192.168.56.103:8983/solr</span><br><span class="line">spring.data.solr.repositories.enabled=true</span><br></pre></td></tr></table></figure>
+
+<h3 id="pom-xml"><a href="#pom-xml" class="headerlink" title="pom.xml"></a>pom.xml</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-data-solr&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.5.0.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="solrdocument"><a href="#solrdocument" class="headerlink" title="solrdocument"></a>solrdocument</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@SolrDocument(solrCoreName = &quot;user&quot;)</span><br><span class="line">@Getter</span><br><span class="line">@Setter</span><br><span class="line">public class SolrUser implements Serializable &#123;</span><br><span class="line">    @Id</span><br><span class="line">    private String id;</span><br><span class="line">    private String name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="repository"><a href="#repository" class="headerlink" title="repository"></a>repository</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface SolrUserRepository extends SolrCrudRepository&lt;SolrUser, String&gt; &#123;</span><br><span class="line">    List&lt;SolrUser&gt; findByNameContaining(String name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="UserServiceImpl"><a href="#UserServiceImpl" class="headerlink" title="UserServiceImpl"></a>UserServiceImpl</h3><p>接口中添加方法<code>getUsersByName</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public List&lt;User&gt; getUsersByName(String name) &#123;</span><br><span class="line">    List&lt;SolrUser&gt; users = userRepository.findByNameContaining(name);</span><br><span class="line">    List&lt;User&gt; results = new ArrayList&lt;&gt;();</span><br><span class="line">    if(users != null) &#123;</span><br><span class="line">        users.forEach( user -&gt; &#123;</span><br><span class="line">            User usr = new User();</span><br><span class="line">            usr.setId(Integer.parseInt(user.getId()));</span><br><span class="line">            usr.setName(user.getName());</span><br><span class="line">            results.add(usr);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    return results;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><h2 id="测试solr-colletion的search功能"><a href="#测试solr-colletion的search功能" class="headerlink" title="测试solr colletion的search功能"></a>测试solr colletion的search功能</h2><p>地址：<a target="_blank" rel="noopener" href="http://192.168.56.103:8983/solr/#/user/query">http://192.168.56.103:8983/solr/#/user/query</a><br>位置：Query, q输入框中输入<code>name:*v*</code>, 点击<code>Execute Query</code></p>
+<h2 id="测试使用solr后的service功能"><a href="#测试使用solr后的service功能" class="headerlink" title="测试使用solr后的service功能"></a>测试使用solr后的service功能</h2><ul>
+<li>使用mvn清理并构建:<code>mvn clean install -Dmaven.test.skip=true</code></li>
+<li>IDE中启动data与service</li>
+<li>访问地址: <a target="_blank" rel="noopener" href="http://localhost:8001/user/getUsersByName/v">http://localhost:8001/user/getUsersByName/v</a></li>
+</ul>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><h2 id="部署到linux下tomcat中"><a href="#部署到linux下tomcat中" class="headerlink" title="部署到linux下tomcat中"></a>部署到linux下tomcat中</h2><p>参考<a href="/2018/02/05/iarc-130">数据访问层</a>中<code>部署</code>部分</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/liushuan/p/8892717.html">centos+solr7.3</a></li>
+<li>solrcloud simple<br><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000008634902">1</a><br><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000010836061">2</a></li>
+<li>Solr Reference Guide<br><a target="_blank" rel="noopener" href="https://lucene.apache.org/solr/resources.html">resource</a><br><a target="_blank" rel="noopener" href="https://lucene.apache.org/solr/guide/7_3/solr-control-script-reference.html#solr-control-script-reference">7.3 script</a><br><a target="_blank" rel="noopener" href="https://lucene.apache.org/solr/guide/7_3/using-zookeeper-to-manage-configuration-files.html#comment-65147407">solr 7.3 using zookeeper</a></li>
+<li>sprintboot using solr<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28870571">simple</a><br><a target="_blank" rel="noopener" href="https://projects.spring.io/spring-data-solr/#quick-start">官方</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Architect/" rel="tag"># Architect</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/04/10/iarc-421/" rel="prev" title="架构之旅-扩展-服务-日志">
+                  <i class="fa fa-angle-left"></i> 架构之旅-扩展-服务-日志
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/08/14/iarc-210/" rel="next" title="架构之旅-集群与管理-应用">
+                  架构之旅-集群与管理-应用 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class=""></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">iDu</span>
+  </div>
+  <div class="powered-by">تطبيق الموقع <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

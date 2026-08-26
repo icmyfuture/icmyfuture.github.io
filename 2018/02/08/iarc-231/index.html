@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/6.1.14/fancybox/fancybox.css" integrity="sha256-mdaMxrItEW6hMIVJJNPKuX0B7KCSJQVEv3mVY4N2we4=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"gitee.com","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"b2t":false,"scrollpercent":false},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"night eighties"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideDownIn"}},"i18n":{"placeholder":"بحث...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"manual"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简述本文中，将改进数据服务。使用redis集群来提供缓存服务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构之旅-集群与管理-数据-Redis">
+<meta property="og:url" content="https://gitee.com/icmyfuture/icmyfuture/2018/02/08/iarc-231/index.html">
+<meta property="og:site_name" content="icmyfuture">
+<meta property="og:description" content="简述本文中，将改进数据服务。使用redis集群来提供缓存服务。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-02-08T08:00:08.000Z">
+<meta property="article:modified_time" content="2024-10-08T01:40:39.721Z">
+<meta property="article:author" content="iDu">
+<meta property="article:tag" content="Architect">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://gitee.com/icmyfuture/icmyfuture/2018/02/08/iarc-231/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://gitee.com/icmyfuture/icmyfuture/2018/02/08/iarc-231/","path":"2018/02/08/iarc-231/","title":"架构之旅-集群与管理-数据-Redis"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>架构之旅-集群与管理-数据-Redis | icmyfuture</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/6.1.14/fancybox/fancybox.umd.js" integrity="sha256-QnJV4HT5r8i89ovZGRD86iynZqHerEbT2xt69vDM36I=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">icmyfuture</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Nothing is true, everthing is permitted</p>
+      <img class="custom-logo-image" src="/%5Bobject%20Object%5D" alt="icmyfuture">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="بحث" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>معلومات</a></li><li class="menu-item menu-item-categories"><a href="/categories" rel="section"><i class="fa fa-th fa-fw"></i>التصنيفات</a></li><li class="menu-item menu-item-archives"><a href="/archives" rel="section"><i class="fa fa-archive fa-fw"></i>الأرشيفات</a></li><li class="menu-item menu-item-tags"><a href="/tags" rel="section"><i class="fa fa-tags fa-fw"></i>الوسوم</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>بحث
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="بحث..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          المحتويات
+        </li>
+        <li class="sidebar-nav-overview">
+          عام
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-number">3.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%8F%91"><span class="nav-number">4.</span> <span class="nav-text">开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pom-dependency"><span class="nav-number">4.1.</span> <span class="nav-text">pom dependency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#appliation-properties-redis%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">appliation.properties redis配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8"><span class="nav-number">4.2.1.</span> <span class="nav-text">通用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%AE%9E%E4%BE%8B"><span class="nav-number">4.2.2.</span> <span class="nav-text">单实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sentinel%E9%9B%86%E7%BE%A4"><span class="nav-number">4.2.3.</span> <span class="nav-text">Sentinel集群</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-number">4.3.</span> <span class="nav-text">配置类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RedisCacheConfig"><span class="nav-number">4.3.1.</span> <span class="nav-text">RedisCacheConfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CacheConfig"><span class="nav-number">4.3.2.</span> <span class="nav-text">CacheConfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBoot%E5%BC%80%E5%90%AF%E7%BC%93%E5%AD%98"><span class="nav-number">4.3.3.</span> <span class="nav-text">SpringBoot开启缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service%E5%AE%9E%E7%8E%B0%E4%B8%AD%EF%BC%8C%E4%BD%BF%E7%94%A8redis%E7%BC%93%E5%AD%98"><span class="nav-number">4.3.4.</span> <span class="nav-text">Service实现中，使用redis缓存</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text">调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">6.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="iDu"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">iDu</p>
+  <div class="site-description" itemprop="description">诗酒风流品花月</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">المقالات</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">التصنيفات</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">الوسوم</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/icmyfuture" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;icmyfuture" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/1865769731" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;1865769731" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://gitee.com/icmyfuture/icmyfuture/2018/02/08/iarc-231/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="iDu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="icmyfuture">
+      <meta itemprop="description" content="诗酒风流品花月">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="架构之旅-集群与管理-数据-Redis | icmyfuture">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          架构之旅-集群与管理-数据-Redis
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">نُشر في</span>
+
+      <time title="أُنشأ: 2018-02-08 16:00:08" itemprop="dateCreated datePublished" datetime="2018-02-08T16:00:08+08:00">2018-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">في</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Technology/" itemprop="url" rel="index"><span itemprop="name">Technology</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h1><p>本文中，将改进数据服务。使用redis集群来提供缓存服务。<span id="more"></span></p>
+<h1 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h1><p><a target="_blank" rel="noopener" href="https://github.com/icmyfuture/iarc/tree/master/iarc-data">iarc-data</a></p>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>IDE: IntelliJ IDEA<br>JDK: 1.8.0_u162<br>Framework: spring boot, dubbo<br>Cache: Redis<br>WebServer: Tomcat (本地端口8088)</p>
+<h1 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h1><h2 id="pom-dependency"><a href="#pom-dependency" class="headerlink" title="pom dependency"></a>pom dependency</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="appliation-properties-redis配置"><a href="#appliation-properties-redis配置" class="headerlink" title="appliation.properties redis配置"></a>appliation.properties redis配置</h2><h3 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.database=2</span><br><span class="line">spring.redis.timeout=10000</span><br><span class="line">spring.redis.pool.max-idle=8</span><br><span class="line">spring.redis.pool.min-idle=1</span><br><span class="line">spring.redis.pool.max-active=8</span><br><span class="line">spring.redis.pool.max-wait=-1</span><br></pre></td></tr></table></figure>
+<h3 id="单实例"><a href="#单实例" class="headerlink" title="单实例"></a>单实例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.host=127.0.0.1</span><br><span class="line">spring.redis.port=6379</span><br><span class="line">spring.redis.password=****</span><br></pre></td></tr></table></figure>
+<h3 id="Sentinel集群"><a href="#Sentinel集群" class="headerlink" title="Sentinel集群"></a>Sentinel集群</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.sentinel.master=mymaster</span><br><span class="line">spring.redis.sentinel.nodes=192.168.56.103:29000,192.168.56.103:29001,192.168.56.103:29002</span><br></pre></td></tr></table></figure>
+<h2 id="配置类"><a href="#配置类" class="headerlink" title="配置类"></a>配置类</h2><h3 id="RedisCacheConfig"><a href="#RedisCacheConfig" class="headerlink" title="RedisCacheConfig"></a>RedisCacheConfig</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">package cn.icmyfuture.iarc.data.common;</span><br><span class="line"></span><br><span class="line">import com.fasterxml.jackson.annotation.JsonAutoDetect;</span><br><span class="line">import com.fasterxml.jackson.annotation.PropertyAccessor;</span><br><span class="line">import com.fasterxml.jackson.databind.DeserializationFeature;</span><br><span class="line">import com.fasterxml.jackson.databind.ObjectMapper;</span><br><span class="line">import org.springframework.cache.CacheManager;</span><br><span class="line">import org.springframework.cache.annotation.CachingConfigurerSupport;</span><br><span class="line">import org.springframework.cache.interceptor.KeyGenerator;</span><br><span class="line">import org.springframework.context.annotation.Bean;</span><br><span class="line">import org.springframework.data.redis.cache.RedisCacheManager;</span><br><span class="line">import org.springframework.data.redis.connection.RedisConnectionFactory;</span><br><span class="line">import org.springframework.data.redis.core.RedisTemplate;</span><br><span class="line">import org.springframework.data.redis.core.StringRedisTemplate;</span><br><span class="line">import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;</span><br><span class="line"></span><br><span class="line">import java.lang.reflect.Method;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.Map;</span><br><span class="line"></span><br><span class="line">public class RedisCacheConfig extends CachingConfigurerSupport &#123;</span><br><span class="line">    private static final Map&lt;String, Long&gt; cacheMap = new HashMap&lt;String, Long&gt;();</span><br><span class="line"></span><br><span class="line">    public static void setCacheTime(String key, Long cacheTime)&#123;</span><br><span class="line">        cacheMap.put(key, cacheTime);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public KeyGenerator keyGenerator() &#123;</span><br><span class="line">        return new KeyGenerator() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Object generate(Object target, Method method, Object... params) &#123;</span><br><span class="line">                StringBuilder sb = new StringBuilder();</span><br><span class="line">                sb.append(&quot;v2:&quot;);</span><br><span class="line">                sb.append(target.getClass().getName()+&quot;:&quot;);</span><br><span class="line">                sb.append(method.getName()+&quot;:&quot;);</span><br><span class="line">                for (Object obj : params) &#123;</span><br><span class="line">                    sb.append(obj.toString());</span><br><span class="line">                &#125;</span><br><span class="line">                return sb.toString();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;rawtypes&quot;)</span><br><span class="line">    @Bean</span><br><span class="line">    public CacheManager cacheManager(RedisTemplate redisTemplate) &#123;</span><br><span class="line">        RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);</span><br><span class="line">        cacheManager.setExpires(cacheMap);</span><br><span class="line">        return cacheManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public RedisTemplate&lt;String, String&gt; redisTemplate(RedisConnectionFactory factory) &#123;</span><br><span class="line">        StringRedisTemplate template = new StringRedisTemplate(factory);</span><br><span class="line">        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);</span><br><span class="line">        ObjectMapper om = new ObjectMapper();</span><br><span class="line">        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);</span><br><span class="line">        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);</span><br><span class="line">        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);</span><br><span class="line">        jackson2JsonRedisSerializer.setObjectMapper(om);</span><br><span class="line">        template.setValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        template.afterPropertiesSet();</span><br><span class="line">        return template;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CacheConfig"><a href="#CacheConfig" class="headerlink" title="CacheConfig"></a>CacheConfig</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">package cn.icmyfuture.iarc.data.config;</span><br><span class="line"></span><br><span class="line">import cn.icmyfuture.iarc.data.common.RedisCacheConfig;</span><br><span class="line">import org.springframework.cache.annotation.EnableCaching;</span><br><span class="line">import org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">@EnableCaching</span><br><span class="line">public class CacheConfig extends RedisCacheConfig &#123;</span><br><span class="line">    public static final String getAllUsers = &quot;getAllUsers&quot;;</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        setCacheTime(getAllUsers, 180L);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="SpringBoot开启缓存"><a href="#SpringBoot开启缓存" class="headerlink" title="SpringBoot开启缓存"></a>SpringBoot开启缓存</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@EnableCaching</span><br><span class="line">public class DataApplication extends SpringBootServletInitializer</span><br></pre></td></tr></table></figure>
+<h3 id="Service实现中，使用redis缓存"><a href="#Service实现中，使用redis缓存" class="headerlink" title="Service实现中，使用redis缓存"></a>Service实现中，使用redis缓存</h3><p>由于dubbo不支持使用注解@Cacheable，只能选择以下2种解决方式之一(本文使用第一种方式，对key的设置有更大的灵活性)</p>
+<ul>
+<li>使用@Service注解，在代码中获取&#x2F;设置缓存</li>
+<li>不使用@Service注解，使用dubbo配置的方式来注册服务，同时开启缓存</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public class UserServiceImpl implements UserService &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    UserDao userDao;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private CacheManager cacheManager;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public List&lt;User&gt; getAllUsers() &#123;</span><br><span class="line">        Cache cache = cacheManager.getCache(CacheConfig.getAllUsers);</span><br><span class="line">        String key = String.format(&quot;%s&quot;, CacheConfig.getAllUsers);</span><br><span class="line">        Cache.ValueWrapper wrapper = cache.get(key);</span><br><span class="line">        List&lt;User&gt; users;</span><br><span class="line">        if (wrapper == null) &#123;</span><br><span class="line">            users = userDao.getAllUsers();</span><br><span class="line">            cache.put(key, users);</span><br><span class="line">            return users;</span><br><span class="line">        &#125;</span><br><span class="line">        return (List&lt;User&gt;) wrapper.get();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><ul>
+<li>访问<code>http://localhost:8002/user/getAllUsers</code>来验证redis缓存的有效性</li>
+<li>访问<code>http://localhost:8002/druid/index.html</code>来查看<code>SQL监控</code>以验证sql仅被执行了一次</li>
+</ul>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>centos下配置好redis。maven工程根目录下执行命令<code>mvn clean install</code>，然后将iarc-data与iarc-service部署到tomcat中,访问<code>http://localhost:8080/service/user/getAllUsers</code></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jaign/articles/7920588.html">windows下redis安装配置</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/qiuyufeng/article/details/70474001">windows下redis集群配置</a></li>
+<li>Redis Sentinel <a target="_blank" rel="noopener" href="http://blog.csdn.net/men_wen/article/details/72724406">1</a> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/keithtt/p/6693030.html">2</a> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/keithtt/p/6719532.html">3</a> <a target="_blank" rel="noopener" href="http://blog.csdn.net/lifetragedy/article/details/50660310">4</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ityouknow/p/5748830.html">spring boot使用redis</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Architect/" rel="tag"># Architect</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/02/05/iarc-130/" rel="prev" title="架构之旅-多层架构-数据">
+                  <i class="fa fa-angle-left"></i> 架构之旅-多层架构-数据
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/03/02/iarc-232/" rel="next" title="架构之旅-集群与管理-数据-Mysql_读写分离&#x2F;主从复制&#x2F;分库分表">
+                  架构之旅-集群与管理-数据-Mysql_读写分离/主从复制/分库分表 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class=""></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">iDu</span>
+  </div>
+  <div class="powered-by">تطبيق الموقع <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
